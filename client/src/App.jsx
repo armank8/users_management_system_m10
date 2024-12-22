@@ -10,16 +10,39 @@ function App() {
       .then((data) => setUsers(data));
   }, []);
 
+  const handleAddUser = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const user = { name, email };
+    console.log(user);
+    fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        const newUsers = [...users, data];
+        setUsers(newUsers);
+        form.reset();
+      });
+  };
+
   return (
     <div className="flex flex-col items-center gap-5">
-      <div>
-        <h1 className="text-center">Users Management System</h1>
-        <h3 className="text-center">Number of Users {users.length} </h3>
+      <div className="text-center">
+        <h1>Users Management System</h1>
+        <h3>Number of Users {users.length} </h3>
       </div>
 
-      {/* Form  onSubmit={}*/}
+      {/* Form  */}
       <div>
-        <form className="outline-none">
+        <form onSubmit={handleAddUser}>
           <input type="text" placeholder="name" name="name" id="" />
           <br />
           <input type="text" placeholder="email" name="email" id="" />
